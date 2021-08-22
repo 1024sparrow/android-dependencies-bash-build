@@ -1,0 +1,6 @@
+*.swo
+*.swp
+.gradle/
+app/_build/
+app/src/main/boris_dependencies/
+app/src/main/dependencies/
