@@ -9,7 +9,7 @@ mainActivityName=MainActivity
 
 function exe {
     echo "$1"
-    $1
+    $1 || echo "error during execution of \"$1\""
 }
 
 # ./gradlew app:androidDependencies
@@ -38,19 +38,32 @@ dependencies=(
     androidx.cardview:cardview:1.0.0 #@aar
     androidx.lifecycle:lifecycle-runtime:2.1.0 #@aar
     androidx.versionedparcelable:versionedparcelable:1.1.0 #@aar
+
+    #
     androidx.collection:collection:1.1.0 #@aar
     androidx.lifecycle:lifecycle-viewmodel:2.1.0 #@aar
     androidx.savedstate:savedstate:1.0.0 #@aar
     androidx.lifecycle:lifecycle-livedata:2.0.0 #@aar
     androidx.lifecycle:lifecycle-livedata-core:2.0.0 #@aar
+
+    #
     androidx.lifecycle:lifecycle-common:2.1.0 #@aar
+
+    #
     androidx.arch.core:core-runtime:2.0.0 #@aar
+
+    #
     androidx.arch.core:core-common:2.1.0 #@aar
     androidx.interpolator:interpolator:1.0.0 #@aar
     androidx.documentfile:documentfile:1.0.0 #@aar
     androidx.localbroadcastmanager:localbroadcastmanager:1.0.0 #@aar
     androidx.print:print:1.0.0 #@aar
+
+    #
     androidx.annotation:annotation:1.1.0 #@aar
+
+    # boris here
+    # https://maven.google.com/androidx/constraintlayout/constraintlayout-solver/2.0.4/constraintlayout-solver-2.0.4.jar 
     androidx.constraintlayout:constraintlayout-solver:2.0.4 #@aar
     androidx.annotation:annotation-experimental:1.0.0 #@aar
 )
@@ -134,7 +147,12 @@ do
             then
                 echo "unknown source"
             else
-                exe "wget $url"
+                exe "wget $url -O $name-$version.aar"
+                #exe "wget $url"
+                mkdir $name-$version
+                pushd $name-$version
+                    unzip ../$name-$version.aar
+                popd
             fi
         fi
     popd
