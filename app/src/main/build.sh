@@ -20,42 +20,42 @@ dependencies=(
 
     com.google.android.material:material:1.3.0 #@aar
     androidx.constraintlayout:constraintlayout:2.0.4 #@aar
-    #androidx.appcompat:appcompat:1.2.0@aar
-    #androidx.viewpager2:viewpager2:1.0.0@aar
-    #androidx.fragment:fragment:1.1.0@aar
-    #androidx.appcompat:appcompat-resources:1.2.0@aar
-    #androidx.drawerlayout:drawerlayout:1.0.0@aar
-    #androidx.coordinatorlayout:coordinatorlayout:1.1.0@aar
-    #androidx.dynamicanimation:dynamicanimation:1.0.0@aar
-    #androidx.recyclerview:recyclerview:1.1.0@aar
-    #androidx.transition:transition:1.2.0@aar
-    #androidx.vectordrawable:vectordrawable-animated:1.1.0@aar
-    #androidx.vectordrawable:vectordrawable:1.1.0@aar
-    #androidx.viewpager:viewpager:1.0.0@aar
-    #androidx.legacy:legacy-support-core-utils:1.0.0@aar
-    #androidx.loader:loader:1.0.0@aar
-    #androidx.activity:activity:1.0.0@aar
-    #androidx.customview:customview:1.0.0@aar
-    #androidx.core:core:1.3.1@aar
-    #androidx.cursoradapter:cursoradapter:1.0.0@aar
-    #androidx.cardview:cardview:1.0.0@aar
-    #androidx.lifecycle:lifecycle-runtime:2.1.0@aar
-    #androidx.versionedparcelable:versionedparcelable:1.1.0@aar
-    #androidx.collection:collection:1.1.0@jar
-    #androidx.lifecycle:lifecycle-viewmodel:2.1.0@aar
-    #androidx.savedstate:savedstate:1.0.0@aar
-    #androidx.lifecycle:lifecycle-livedata:2.0.0@aar
-    #androidx.lifecycle:lifecycle-livedata-core:2.0.0@aar
-    #androidx.lifecycle:lifecycle-common:2.1.0@jar
-    #androidx.arch.core:core-runtime:2.0.0@aar
-    #androidx.arch.core:core-common:2.1.0@jar
-    #androidx.interpolator:interpolator:1.0.0@aar
-    #androidx.documentfile:documentfile:1.0.0@aar
-    #androidx.localbroadcastmanager:localbroadcastmanager:1.0.0@aar
-    #androidx.print:print:1.0.0@aar
-    #androidx.annotation:annotation:1.1.0@jar
-    #androidx.constraintlayout:constraintlayout-solver:2.0.4@jar
-    #androidx.annotation:annotation-experimental:1.0.0@aar
+    androidx.appcompat:appcompat:1.2.0 #@aar
+    androidx.viewpager2:viewpager2:1.0.0 #@aar
+    androidx.fragment:fragment:1.1.0 #@aar
+    androidx.appcompat:appcompat-resources:1.2.0 #@aar
+    androidx.drawerlayout:drawerlayout:1.0.0 #@aar
+    androidx.coordinatorlayout:coordinatorlayout:1.1.0 #@aar
+    androidx.dynamicanimation:dynamicanimation:1.0.0 #@aar
+    androidx.recyclerview:recyclerview:1.1.0 #@aar
+    androidx.transition:transition:1.2.0 #@aar
+    androidx.vectordrawable:vectordrawable-animated:1.1.0 #@aar
+    androidx.vectordrawable:vectordrawable:1.1.0 #@aar
+    androidx.viewpager:viewpager:1.0.0 #@aar
+    androidx.legacy:legacy-support-core-utils:1.0.0 #@aar
+    androidx.loader:loader:1.0.0 #@aar
+    androidx.activity:activity:1.0.0 #@aar
+    androidx.customview:customview:1.0.0 #@aar
+    androidx.core:core:1.3.1 #@aar
+    androidx.cursoradapter:cursoradapter:1.0.0 #@aar
+    androidx.cardview:cardview:1.0.0 #@aar
+    androidx.lifecycle:lifecycle-runtime:2.1.0 #@aar
+    androidx.versionedparcelable:versionedparcelable:1.1.0 #@aar
+    androidx.collection:collection:1.1.0 #@aar
+    androidx.lifecycle:lifecycle-viewmodel:2.1.0 #@aar
+    androidx.savedstate:savedstate:1.0.0 #@aar
+    androidx.lifecycle:lifecycle-livedata:2.0.0 #@aar
+    androidx.lifecycle:lifecycle-livedata-core:2.0.0 #@aar
+    androidx.lifecycle:lifecycle-common:2.1.0 #@aar
+    androidx.arch.core:core-runtime:2.0.0 #@aar
+    androidx.arch.core:core-common:2.1.0 #@aar
+    androidx.interpolator:interpolator:1.0.0 #@aar
+    androidx.documentfile:documentfile:1.0.0 #@aar
+    androidx.localbroadcastmanager:localbroadcastmanager:1.0.0 #@aar
+    androidx.print:print:1.0.0 #@aar
+    androidx.annotation:annotation:1.1.0 #@aar
+    androidx.constraintlayout:constraintlayout-solver:2.0.4 #@aar
+    androidx.annotation:annotation-experimental:1.0.0 #@aar
 )
 
 declare -i state=0
@@ -71,7 +71,11 @@ do
         echo $i2
         if [ $state -eq 0 ]
         then
-            sourceId=$i2
+            OIFS2=$IFS
+            IFS=.
+            sourceId=($i2)
+            sourceId=${sourceId[@]}
+            IFS=$OIFS2
         elif [ $state -eq 1 ]
         then
             name=$i2
@@ -88,19 +92,53 @@ do
         if [ ! -f ${name}-${version}.aar ]
         then
             echo "${name}-${version}"
-            #exe "wget https://dl.google.com/android/maven2/androidx/${name}/${name}/${version}/${name}-${version}.aar"
-            # https://dl.google.com/dl/android/maven2/com/android/support/design/27.0.2/design-27.0.2.aar
-            #exe "wget https://dl.google.com/android/maven2/androidx/${name}/${version}/${name}-${version}.aar"
 
-            #exe "wget https://dl.google.com/android/maven2/com/google/android/${name}/${name}/${version}/${name}-${version}.aar"
-            if [ $sourceId == com.google.android.material ]
+            state=0
+            url=
+            for i in $sourceId
+            do
+                echo "== $i"
+                prevState=$state
+                if [ $state -eq 0 ]
+                then
+                    if [ $i == com ]
+                    then
+                        state=11
+                    elif [ $i == androidx ]
+                    then
+                        state=21
+                    fi
+                elif [ $state -eq 11 ]
+                then
+                    if [ $i == google ]
+                    then
+                        state=12
+                    fi
+                elif [ $state -eq 12 ]
+                then
+                    if [ $i == android ]
+                    then
+                        state=13
+                    fi
+                elif [ $state -eq 13 ]
+                then
+                    url=https://dl.google.com/android/maven2/com/google/android/$i/$name/$version/$name-$version.aar
+                elif [ $state -eq 21 ]
+                then
+                    url=https://dl.google.com/android/maven2/androidx/$i/$name/$version/$name-$version.aar
+                fi
+
+                if [ $state -eq $prevState ]
+                then
+                    echo unknown source
+                fi
+            done
+
+            if [ -z $url ]
             then
-                exe "wget https://dl.google.com/android/maven2/com/google/android/${name}/${name}/${version}/${name}-${version}.aar"
-            elif [ $sourceId == androidx.constraintlayout ]
-            then
-                # wget https://dl.google.com/android/maven2/androidx/constraintlayout/2.0.4/constraintlayout-2.0.4.aar
-                # https://dl.google.com/android/maven2/androidx/constraintlayout/constraintlayout/2.0.4/constraintlayout-2.0.4.aar
-                exe "wget https://dl.google.com/android/maven2/androidx/${name}/${name}/${version}/${name}-${version}.aar"
+                echo "unknown source"
+            else
+                exe "wget $url"
             fi
         fi
     popd
