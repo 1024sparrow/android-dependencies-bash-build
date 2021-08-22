@@ -12,12 +12,9 @@ function exe {
     $1
 }
 
+# ./gradlew app:androidDependencies
+# releaseCompileClasspath - Dependencies for compilation
 dependencies=(
-    #com.android.support:appcompat:1.2.0
-    #com.android.support:constraintlayout:2.0.4
-    #com.android.support:design:27.0.2
-
-
     com.google.android.material:material:1.3.0 #@aar
     androidx.constraintlayout:constraintlayout:2.0.4 #@aar
     androidx.appcompat:appcompat:1.2.0 #@aar
@@ -62,13 +59,10 @@ declare -i state=0
 for i in ${dependencies[@]}
 do
     state=0
-    echo $i
-    echo "============"
     OIFS=$IFS
     IFS=:
     for i2 in $i
     do
-        echo $i2
         if [ $state -eq 0 ]
         then
             OIFS2=$IFS
@@ -123,9 +117,11 @@ do
                 elif [ $state -eq 13 ]
                 then
                     url=https://dl.google.com/android/maven2/com/google/android/$i/$name/$version/$name-$version.aar
+                    state=200
                 elif [ $state -eq 21 ]
                 then
                     url=https://dl.google.com/android/maven2/androidx/$i/$name/$version/$name-$version.aar
+                    state=200
                 fi
 
                 if [ $state -eq $prevState ]
