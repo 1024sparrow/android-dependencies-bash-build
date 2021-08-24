@@ -15,57 +15,44 @@ function exe {
 # ./gradlew app:androidDependencies
 # releaseCompileClasspath - Dependencies for compilation
 dependencies=(
-    com.google.android.material:material:1.3.0 #@aar
-    androidx.constraintlayout:constraintlayout:2.0.4 #@aar
-    androidx.appcompat:appcompat:1.2.0 #@aar
-    androidx.viewpager2:viewpager2:1.0.0 #@aar
-    androidx.fragment:fragment:1.1.0 #@aar
-    androidx.appcompat:appcompat-resources:1.2.0 #@aar
-    androidx.drawerlayout:drawerlayout:1.0.0 #@aar
-    androidx.coordinatorlayout:coordinatorlayout:1.1.0 #@aar
-    androidx.dynamicanimation:dynamicanimation:1.0.0 #@aar
-    androidx.recyclerview:recyclerview:1.1.0 #@aar
-    androidx.transition:transition:1.2.0 #@aar
-    androidx.vectordrawable:vectordrawable-animated:1.1.0 #@aar
-    androidx.vectordrawable:vectordrawable:1.1.0 #@aar
-    androidx.viewpager:viewpager:1.0.0 #@aar
-    androidx.legacy:legacy-support-core-utils:1.0.0 #@aar
-    androidx.loader:loader:1.0.0 #@aar
-    androidx.activity:activity:1.0.0 #@aar
-    androidx.customview:customview:1.0.0 #@aar
-    androidx.core:core:1.3.1 #@aar
-    androidx.cursoradapter:cursoradapter:1.0.0 #@aar
-    androidx.cardview:cardview:1.0.0 #@aar
-    androidx.lifecycle:lifecycle-runtime:2.1.0 #@aar
-    androidx.versionedparcelable:versionedparcelable:1.1.0 #@aar
-
-    #
-    androidx.collection:collection:1.1.0 #@aar
-    androidx.lifecycle:lifecycle-viewmodel:2.1.0 #@aar
-    androidx.savedstate:savedstate:1.0.0 #@aar
-    androidx.lifecycle:lifecycle-livedata:2.0.0 #@aar
-    androidx.lifecycle:lifecycle-livedata-core:2.0.0 #@aar
-
-    #
-    androidx.lifecycle:lifecycle-common:2.1.0 #@aar
-
-    #
-    androidx.arch.core:core-runtime:2.0.0 #@aar
-
-    #
-    androidx.arch.core:core-common:2.1.0 #@aar
-    androidx.interpolator:interpolator:1.0.0 #@aar
-    androidx.documentfile:documentfile:1.0.0 #@aar
-    androidx.localbroadcastmanager:localbroadcastmanager:1.0.0 #@aar
-    androidx.print:print:1.0.0 #@aar
-
-    #
-    androidx.annotation:annotation:1.1.0 #@aar
-
-    # boris here
-    # https://maven.google.com/androidx/constraintlayout/constraintlayout-solver/2.0.4/constraintlayout-solver-2.0.4.jar 
-    androidx.constraintlayout:constraintlayout-solver:2.0.4 #@aar
-    androidx.annotation:annotation-experimental:1.0.0 #@aar
+    com.google.android.material:material:1.3.0@aar
+    androidx.constraintlayout:constraintlayout:2.0.4@aar
+    androidx.appcompat:appcompat:1.2.0@aar
+    androidx.viewpager2:viewpager2:1.0.0@aar
+    androidx.fragment:fragment:1.1.0@aar
+    androidx.appcompat:appcompat-resources:1.2.0@aar
+    androidx.drawerlayout:drawerlayout:1.0.0@aar
+    androidx.coordinatorlayout:coordinatorlayout:1.1.0@aar
+    androidx.dynamicanimation:dynamicanimation:1.0.0@aar
+    androidx.recyclerview:recyclerview:1.1.0@aar
+    androidx.transition:transition:1.2.0@aar
+    androidx.vectordrawable:vectordrawable-animated:1.1.0@aar
+    androidx.vectordrawable:vectordrawable:1.1.0@aar
+    androidx.viewpager:viewpager:1.0.0@aar
+    androidx.legacy:legacy-support-core-utils:1.0.0@aar
+    androidx.loader:loader:1.0.0@aar
+    androidx.activity:activity:1.0.0@aar
+    androidx.customview:customview:1.0.0@aar
+    androidx.core:core:1.3.1@aar
+    androidx.cursoradapter:cursoradapter:1.0.0@aar
+    androidx.cardview:cardview:1.0.0@aar
+    androidx.lifecycle:lifecycle-runtime:2.1.0@aar
+    androidx.versionedparcelable:versionedparcelable:1.1.0@aar
+    androidx.collection:collection:1.1.0@aar
+    androidx.lifecycle:lifecycle-viewmodel:2.1.0@aar
+    androidx.savedstate:savedstate:1.0.0@aar
+    androidx.lifecycle:lifecycle-livedata:2.0.0@aar
+    androidx.lifecycle:lifecycle-livedata-core:2.0.0@aar
+    androidx.lifecycle:lifecycle-common:2.1.0@aar
+    androidx.arch.core:core-runtime:2.0.0@aar
+    androidx.arch.core:core-common:2.1.0@aar
+    androidx.interpolator:interpolator:1.0.0@aar
+    androidx.documentfile:documentfile:1.0.0@aar
+    androidx.localbroadcastmanager:localbroadcastmanager:1.0.0@aar
+    androidx.print:print:1.0.0@aar
+    androidx.annotation:annotation:1.1.0@aar
+    androidx.constraintlayout:constraintlayout-solver:2.0.4@aar
+    androidx.annotation:annotation-experimental:1.0.0@aar
 )
 
 declare -i state=0
@@ -74,6 +61,10 @@ do
     state=0
     OIFS=$IFS
     IFS=:
+    if [[ $i =~ @aar$ ]]
+    then
+        i=${i:0:-4}
+    fi
     for i2 in $i
     do
         if [ $state -eq 0 ]
@@ -118,7 +109,7 @@ do
             else
                 for i in $(seq 5)
                 do
-                    sourceId=${sourceId/ /\/}
+                    sourceId=${sourceId/ //}
                 done
             fi
 
