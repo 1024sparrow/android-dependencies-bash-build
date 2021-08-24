@@ -9,7 +9,7 @@ mainActivityName=MainActivity
 
 function exe {
     echo "$1"
-    $1 || echo "error during execution of \"$1\""
+    $1 || (echo "error during execution of \"$1\""; return 1)
 }
 
 # ./gradlew app:androidDependencies
@@ -102,56 +102,62 @@ do
 
             state=0
             url=
-            for i in $sourceId
-            do
-                echo "== $i"
-                prevState=$state
-                if [ $state -eq 0 ]
-                then
-                    if [ $i == com ]
-                    then
-                        state=11
-                    elif [ $i == androidx ]
-                    then
-                        state=21
-                    fi
-                elif [ $state -eq 11 ]
-                then
-                    if [ $i == google ]
-                    then
-                        state=12
-                    fi
-                elif [ $state -eq 12 ]
-                then
-                    if [ $i == android ]
-                    then
-                        state=13
-                    fi
-                elif [ $state -eq 13 ]
-                then
-                    url=https://dl.google.com/android/maven2/com/google/android/$i/$name/$version/$name-$version.aar
-                    state=200
-                elif [ $state -eq 21 ]
-                then
-                    url=https://dl.google.com/android/maven2/androidx/$i/$name/$version/$name-$version.aar
-                    state=200
-                fi
+            if [[ $sourceId =~ ^androidx. ]]
+            then
+                state=1
+                sourceId=${sourceId:9}
+            elif [[ $sourceId =~ ^com.google. ]]
+            then
+                state=2
+                sourceId=${sourceId:11}
+            fi
+            if [ $state -eq 0 ]
+            then
+                echo 'unknown source'
+                exit 1
+            else
+                for i in $(seq 5)
+                do
+                    sourceId=${sourceId/ /\/}
+                done
+            fi
 
-                if [ $state -eq $prevState ]
-                then
-                    echo unknown source
-                fi
-            done
+            echo "sourceId: $sourceId"
 
-            if [ -z $url ]
+            if [ $state -eq 1 ]
+            then
+                if exe "wget https://dl.google.com/android/maven2/androidx/$sourceId/$name/$version/$name-$version.aar"
+                then
+                    state=200
+                    name=$name-$version
+                    version=aar
+                elif exe "wget https://maven.google.com/androidx/$sourceId/$name/$version/$name-$version.jar"
+                then
+                    state=200
+                    name=$name-$version
+                    version=jar
+                fi
+            elif [ $state -eq 2 ]
+            then
+                if exe "wget https://dl.google.com/android/maven2/com/google/$sourceId/$name/$version/$name-$version.aar"
+                then
+                    state=200
+                    name=$name-$version
+                    version=aar
+                fi
+            fi
+
+            if [ ! $state -eq 200 ]
             then
                 echo "unknown source"
-            else
-                exe "wget $url -O $name-$version.aar"
-                #exe "wget $url"
-                mkdir $name-$version
-                pushd $name-$version
-                    unzip ../$name-$version.aar
+                exit 1
+            fi
+
+            if [ $version == aar ]
+            then
+                mkdir $name
+                pushd $name
+                        unzip ../$name.$version
                 popd
             fi
         fi
